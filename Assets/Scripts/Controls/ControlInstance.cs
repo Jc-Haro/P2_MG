@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ControlInstance : MonoBehaviour
 {
+    //Stores the unic instance of controllers
     private static ControlsAsset m_Instance;
 
+    //Return the controller object
     public static ControlsAsset Instanse
     {
         get
