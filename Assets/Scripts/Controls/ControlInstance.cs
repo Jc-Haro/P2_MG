@@ -17,7 +17,7 @@ public class ControlInstance : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //If controlls already exist
         if (m_Instance != null)
