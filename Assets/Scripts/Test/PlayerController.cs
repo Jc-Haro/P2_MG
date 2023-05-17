@@ -10,10 +10,10 @@ public class PlayerController : MonoBehaviour
     private float playerSpeed = 500.0f;
     private float jumpForce = 7.5f;
     private bool isGrounded = false;
-    private bool isWallJump = false;
+    private bool hasWallJump = false;
+    private bool isSecondJumReady = false;
     Vector3 scale;
     private float originalScaleX;
-    private Vector2 playerVelocity;
 
     // Start is called before the first frame update
     void Start()
@@ -33,8 +33,7 @@ public class PlayerController : MonoBehaviour
         if (playerInput < 0) { scale.x = -originalScaleX; }
         else if (playerInput>0) { scale.x = originalScaleX; }
         transform.localScale = scale;
-        playerVelocity.y -= 9.81f * Time.deltaTime * Time.deltaTime;
-        playerRigidBody.velocity = playerVelocity;
+       
 
         if(playerInput != 0 )
         {
@@ -48,13 +47,34 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("Walking_B", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || isWallJump))
+        if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && isSecondJumReady)
         {
             playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
-            isWallJump = false;
+            hasWallJump = false;
+            isSecondJumReady = false;
             playerAnimator.SetTrigger("Jump_T");
         }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded )
+        {
+            playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
+            hasWallJump = false;
+            isSecondJumReady = true;
+            playerAnimator.SetTrigger("Jump_T");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && hasWallJump)
+        {
+            playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
+            hasWallJump = false;
+            isSecondJumReady = false;
+            playerAnimator.SetTrigger("Jump_T");
+        }
+
+
 
 
     }
@@ -67,7 +87,8 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Wall"))
         {
-            isGrounded = true;
+            hasWallJump = true;
+            isSecondJumReady = false;
         }
 
     }
