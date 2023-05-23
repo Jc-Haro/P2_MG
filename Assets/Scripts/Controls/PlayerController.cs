@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public Animator playerAnimator;
     private Rigidbody2D playerRigidBody;
     private float playerInput = 0.0f;
-    private float playerSpeed = 500.0f;
+    private float playerSpeed = 50.0f;
     private float jumpForce = 7.5f;
     private bool isGrounded = false;
     private bool hasWallJump = false;
@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
         {
             playerAnimator.SetFloat("WalKing_LR_F", playerInput);
             playerAnimator.SetBool("Walking_B", true);
-            playerRigidBody.AddForce(new Vector2(1,0) * Time.deltaTime * playerSpeed * playerInput);
+           
   
         }
         else
@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetTrigger("Jump_T");
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded )
+        if (ControlInstance.Instanse.GamePlay.Jump.WasPressedThisFrame() && isGrounded )
         {
             playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
@@ -79,6 +79,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        playerRigidBody.velocity = new Vector2(playerInput * playerSpeed * Time.deltaTime, playerRigidBody.velocity.y);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -92,4 +97,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+
 }
