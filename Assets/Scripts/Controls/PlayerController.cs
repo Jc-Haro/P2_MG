@@ -7,12 +7,14 @@ public class PlayerController : MonoBehaviour
     public Animator playerAnimator;
     private Rigidbody2D playerRigidBody;
     private float playerInput = 0.0f;
-    private float playerSpeed = 50.0f;
+    private float playerSpeed = 150.0f;
     private float jumpForce = 7.5f;
+    private float radius;
     private bool isGrounded = false;
     private bool hasWallJump = false;
-    private bool isSecondJumReady = false;
+    private bool isOnWall = false;
     Vector3 scale;
+    public Transform origin;
     private float originalScaleX;
 
     // Start is called before the first frame update
@@ -47,44 +49,40 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("Walking_B", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && isSecondJumReady)
-        {
-            playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            isGrounded = false;
-            hasWallJump = false;
-            isSecondJumReady = false;
-            playerAnimator.SetTrigger("Jump_T");
-        }
+
 
         if (ControlInstance.Instanse.GamePlay.Jump.WasPressedThisFrame() && isGrounded )
         {
             playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
             hasWallJump = false;
-            isSecondJumReady = true;
             playerAnimator.SetTrigger("Jump_T");
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && hasWallJump)
+        if (ControlInstance.Instanse.GamePlay.Jump.WasPressedThisFrame() && hasWallJump)
         {
             playerRigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
             hasWallJump = false;
-            isSecondJumReady = false;
             playerAnimator.SetTrigger("Jump_T");
         }
-
-
-
-
     }
 
     private void FixedUpdate()
     {
-        playerRigidBody.velocity = new Vector2(playerInput * playerSpeed * Time.deltaTime, playerRigidBody.velocity.y);
+        if (isOnWall)
+        {
+            playerRigidBody.velocity = new Vector2(0, -1);
+        }
+        else
+        {
+            playerRigidBody.velocity = new Vector2(playerInput * playerSpeed * Time.deltaTime, playerRigidBody.velocity.y);
+        }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+   
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
@@ -93,10 +91,19 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             hasWallJump = true;
-            isSecondJumReady = false;
+            isOnWall = true;
+         
         }
-
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            isOnWall = false;
+        }
+    }
+
 
 
 }
