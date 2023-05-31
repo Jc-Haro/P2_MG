@@ -104,6 +104,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    private IEnumerator JumpingDelay()
+    {
+        
+        yield return new WaitForSeconds(0.5f); 
+    }
 
 }
