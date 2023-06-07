@@ -54,6 +54,7 @@ public class GenerateShoots : MonoBehaviour
             Vector2 end = positions[i + 1];
             Debug.DrawLine(start, end, Color.magenta, 2);
         }
+
         offset -= 10;
     }
 }
