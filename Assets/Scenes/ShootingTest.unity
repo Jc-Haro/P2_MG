@@ -251,7 +251,7 @@ MonoBehaviour:
   maxNodeLevel: 5
   probability: 0.6
   partitioning: {fileID: 2028937718}
-  size: {x: 20, y: 20}
+  size: {x: 10, y: 20}
 --- !u!4 &2028937719
 Transform:
   m_ObjectHideFlags: 0

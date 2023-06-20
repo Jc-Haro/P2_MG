@@ -71,8 +71,51 @@ public class KGraph
                 path.Add(edges[i]);
                 continue;
             }
+            if(source.group == destination.group)
+            {
+                continue;
+            }
+
+            if(destination.group == -1)
+            {
+                int groups = source.group;
+                int dg = edge.destination;
+                destination.group = groups;
+                vertex[dg] = destination;
+                pathGroups[groups].vertex.Add(dg);
+                path.Add(edges[i]);
+                continue;
+
+            }
+
+            if(source.group == -1)
+            {
+                int groups = destination.group;
+                int src = edge.source;
+                source.group = groups;
+                vertex[src] = source;
+                pathGroups[groups].vertex.Add(src);
+                path.Add(edges[i]);
+                continue;
+            }
+
+            KGroup sourceGroup = pathGroups[source.group];
+            KGroup destinationGroup = pathGroups[destination.group];
+
+            for(int j = 0; j<destinationGroup.vertex.Count; j++)
+            {
+                int dgv = destinationGroup.vertex[j];
+                KVertex v = vertex[dgv];
+                v.group = source.group;
+                vertex[dgv] = v;
+                sourceGroup.vertex.Add(dgv);
+            }
+            pathGroups[source.group] = sourceGroup;
+            path.Add(edges[i]);
         }
 
         return path.ToArray();
     }
+
+
 }

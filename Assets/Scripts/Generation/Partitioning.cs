@@ -25,7 +25,22 @@ public class Partitioning : MonoBehaviour
 
         for(int i = 0; i< leaves.Count; i++)
         {
-            leaves[i].Data.Draw(Color.green, 10);
+            leaves[i].Data.Draw(Color.magenta, 10);
+        }
+
+        Vector2[] positions = new Vector2[leaves.Count];
+        for(int i = 0; i<leaves.Count; i++)
+        {
+            positions[i] = leaves[i].Data.Center;
+        }
+        KGraph graph = new KGraph(positions);
+        KEdge[] path = graph.KrusKal();
+
+        for(int i = 0; i<path.Length; i++)
+        {
+            Vector2 src = graph.Vertex[path[i].source].centerPosition;
+            Vector2 dst = graph.Vertex[path[i].destination].centerPosition;
+            Debug.DrawLine(src, dst, Color.white, 10);
         }
     }
     public void Generate(Node<Rectangle> node)
