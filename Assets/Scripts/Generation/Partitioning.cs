@@ -42,6 +42,9 @@ public class Partitioning : MonoBehaviour
             Vector2 dst = graph.Vertex[path[i].destination].centerPosition;
             Debug.DrawLine(src, dst, Color.white, 10);
         }
+
+        Grid<int> grid = new Grid<int>(transform.position, 100, 100, 1.0f, -1);
+        grid.Draw(Color.blue, 10, -1);
     }
     public void Generate(Node<Rectangle> node)
     {
