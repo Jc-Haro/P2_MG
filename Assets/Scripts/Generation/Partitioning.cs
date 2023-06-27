@@ -11,6 +11,8 @@ public class Partitioning : MonoBehaviour
     [SerializeField] private Partitioning partitioning;
     [SerializeField] private Vector2 size;
 
+    [SerializeField] private int margin;
+
 
     private void Start()
     {
@@ -43,10 +45,66 @@ public class Partitioning : MonoBehaviour
             Debug.DrawLine(src, dst, Color.white, 10);
         }
 
-        Grid<int> grid = new Grid<int>(transform.position, 100, 100, 1.0f, -1);
+        int widht = (int)Mathf.Ceil(size.x);
+        int heigth = (int)Mathf.Ceil(size.y);
+
+        Grid<int> grid = new Grid<int>(transform.position, widht, heigth, 1.0f, -1);
         grid.Draw(Color.blue, 10, -1);
+
+        for (int i = 0; i < leaves.Count; i++)
+        {
+            Rectangle r = leaves[i].Data;
+
+            Vector2 bl = r.Origin;
+            Vector2 tr = r.Origin + r.Size;
+
+
+            grid.PointToIndex(bl, out int blx, out int bly);
+            grid.PointToIndex(tr, out int trx, out int @try);
+
+            for (int x = blx + margin; x < trx - margin; x++)
+            {
+                for (int y = bly + margin; y < @try - margin; y++)
+                {
+                    grid.SetValue(0, x, y);
+                }
+            }
+        }
+
+        grid.Draw(Color.green, 10, 0);
+
+        for(int i  = 0; i<path.Length; i++)
+        {
+            KEdge e = path[i];
+            KVertex s = graph.Vertex[e.source];
+            KVertex d = graph.Vertex[e.destination];
+
+            grid.PointToIndex(s.centerPosition, out int sX, out int sY);
+            grid.PointToIndex(d.centerPosition, out int dX, out int dY);
+
+            float distance = Grid<bool>.Distance(sX,sY,dX,dY);
+ while (distance > 0)
+            {
+                int dx = dX - sX;
+                int dy = dY - sY;
+
+                if(dx != 0)
+                {
+                    sX += dx / Mathf.Abs(dx);
+                }
+                else
+                {
+                    sY += dy / Mathf.Abs(dy);
+                }
+                grid.SetValue(1, sX, sY);
+                distance = Grid<bool>.Distance(sX, sY, dX, dY);
+            }
+        }
+           
+        grid.Draw(Color.red, 10, 1);
     }
-    public void Generate(Node<Rectangle> node)
+
+     public void Generate(Node<Rectangle> node)
     {
         if (node.Level >= maxNodeLevel)
         {

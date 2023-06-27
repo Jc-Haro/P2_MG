@@ -140,5 +140,9 @@ public class Grid<T>
         }
     }
     
+    public static float Distance(int x0, int y0, int x1, int y1)
+    {
+        return Mathf.Abs(x1 - x0) + Mathf.Abs(y1 - y0);
+    }
 
 }
