@@ -27,7 +27,7 @@ public class Partitioning : MonoBehaviour
 
         for(int i = 0; i< leaves.Count; i++)
         {
-            leaves[i].Data.Draw(Color.magenta, 10);
+            //leaves[i].Data.Draw(Color.blue, 10);
         }
 
         Vector2[] positions = new Vector2[leaves.Count];
@@ -42,7 +42,7 @@ public class Partitioning : MonoBehaviour
         {
             Vector2 src = graph.Vertex[path[i].source].centerPosition;
             Vector2 dst = graph.Vertex[path[i].destination].centerPosition;
-            Debug.DrawLine(src, dst, Color.white, 10);
+           // Debug.DrawLine(src, dst, Color.white, 10);
         }
 
         int widht = (int)Mathf.Ceil(size.x);
@@ -51,27 +51,6 @@ public class Partitioning : MonoBehaviour
         Grid<int> grid = new Grid<int>(transform.position, widht, heigth, 1.0f, -1);
         grid.Draw(Color.blue, 10, -1);
 
-        for (int i = 0; i < leaves.Count; i++)
-        {
-            Rectangle r = leaves[i].Data;
-
-            Vector2 bl = r.Origin;
-            Vector2 tr = r.Origin + r.Size;
-
-
-            grid.PointToIndex(bl, out int blx, out int bly);
-            grid.PointToIndex(tr, out int trx, out int @try);
-
-            for (int x = blx + margin; x < trx - margin; x++)
-            {
-                for (int y = bly + margin; y < @try - margin; y++)
-                {
-                    grid.SetValue(0, x, y);
-                }
-            }
-        }
-
-        grid.Draw(Color.green, 10, 0);
 
         for(int i  = 0; i<path.Length; i++)
         {
@@ -102,6 +81,29 @@ public class Partitioning : MonoBehaviour
         }
            
         grid.Draw(Color.red, 10, 1);
+
+
+        for (int i = 0; i < leaves.Count; i++)
+        {
+            Rectangle r = leaves[i].Data;
+
+            Vector2 bl = r.Origin;
+            Vector2 tr = r.Origin + r.Size;
+
+
+            grid.PointToIndex(bl, out int blx, out int bly);
+            grid.PointToIndex(tr, out int trx, out int @try);
+
+            for (int x = blx + margin; x < trx - margin; x++)
+            {
+                for (int y = bly + margin; y < @try - margin; y++)
+                {
+                    grid.SetValue(0, x, y);
+                }
+            }
+        }
+
+        grid.Draw(Color.green, 10, 0);
     }
 
      public void Generate(Node<Rectangle> node)

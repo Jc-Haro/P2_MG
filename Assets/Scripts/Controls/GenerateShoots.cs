@@ -11,12 +11,15 @@ public class GenerateShoots : MonoBehaviour
     [SerializeField] private float circumference=1;
     [SerializeField] private float offset=1;
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] float bulletForce; 
+    [SerializeField] float bulletForce;
+    [SerializeField] private int numberOfRounds = 3;
+    [SerializeField] float startShootingDelay = 0.5f;
+    [SerializeField] float shootingRate = 0.5f;
+    [SerializeField] float bulletRotation = -20;
 
     private void Awake()
     {
-        InvokeRepeating("GenerateCircle", 0.5f, 0.3f);
-        GenerateCircle();  
+        InvokeRepeating("GenerateCircle", startShootingDelay, shootingRate);
     }
   
     public Vector2[] Generate()
@@ -40,21 +43,30 @@ public class GenerateShoots : MonoBehaviour
 
     void GenerateCircle()
     {
-        Vector2[] positions = Generate();
-
-        for(int i  = 0; i <positions.Length; i++)
+        if (numberOfRounds > 0)
         {
-            GameObject bullet = Instantiate(bulletPrefab, positions[i], Quaternion.identity);
-            Vector2 direction = (Vector2)transform.position - positions[i];
-            bullet.GetComponent<Rigidbody2D>().AddForce(direction.normalized  * bulletForce);
-        }
-        for (int i = 0; i < positions.Length - 1; i++)
-        {
-            Vector2 start = positions[i];
-            Vector2 end = positions[i + 1];
-            Debug.DrawLine(start, end, Color.magenta, 2);
-        }
+            numberOfRounds--;
+            Vector2[] positions = Generate();
 
-        offset -= 10;
+            for (int i = 0; i < positions.Length; i++)
+            {
+                GameObject bullet = Instantiate(bulletPrefab, positions[i], Quaternion.identity);
+                Vector2 direction = positions[i] - (Vector2)transform.position;
+                bullet.GetComponent<Rigidbody2D>().AddForce(direction.normalized * bulletForce);
+            }
+            for (int i = 0; i < positions.Length - 1; i++)
+            {
+                Vector2 start = positions[i];
+                Vector2 end = positions[i + 1];
+                Debug.DrawLine(start, end, Color.magenta, 2);
+            }
+
+            offset -= bulletRotation;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+      
     }
 }
