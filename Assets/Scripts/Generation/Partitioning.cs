@@ -13,6 +13,8 @@ public class Partitioning : MonoBehaviour
 
     [SerializeField] private int margin;
 
+    [SerializeField] private RoomGeneration roomGen;
+
 
     private void Start()
     {
@@ -49,7 +51,7 @@ public class Partitioning : MonoBehaviour
         int heigth = (int)Mathf.Ceil(size.y);
 
         Grid<int> grid = new Grid<int>(transform.position, widht, heigth, 1.0f, -1);
-        grid.Draw(Color.blue, 10, -1);
+        //grid.Draw(Color.blue, 10, -1);
 
 
         for(int i  = 0; i<path.Length; i++)
@@ -103,7 +105,10 @@ public class Partitioning : MonoBehaviour
             }
         }
 
-        grid.Draw(Color.green, 10, 0);
+        //grid.Draw(Color.green, 10, 0);
+
+        roomGen.Generate(grid);
+        
     }
 
      public void Generate(Node<Rectangle> node)
